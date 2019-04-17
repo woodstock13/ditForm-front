@@ -1,13 +1,11 @@
 {
-  "subCat": [
-    {
-      "id":"2.1",
+  "subCat": {
+      "id":"2-1",
       "name": "subCat2.1",
       "questions" : [
-        { "id":"2.1.1", "name": "question 1"},
-        { "id":"2.1.2", "name": "question 2" },
-        { "id":"1.1.3", "name": "question 3" }
+        { "id":"2-1-1", "name": "Vue 360° des usagers / clients (données structurées / non structurées)"},
+        { "id":"2-1-2", "name": "Gestion des contenus générés par les utilisateurs" },
+        { "id":"2-1-3", "name": "Connaissance des usagers /clients enrichie avec des données externes" }
       ]
     }
-  ]
 }
