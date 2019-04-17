@@ -1,9 +1,13 @@
+let tblRepQ = new Map()
 $(document).ready(function() {
     // PROD remplacer par une requete post
     $.get("mock/getQuestions.json", function(data, status){
         let subCat = data.subCat
+        let nbQuestions = subCat.questions.length
         $('#instruction').text("Merci de répondre aux questions - "+subCat.name+" :")
         createCategories(subCat)
+        getValuesInputs()
+        validateButton(nbQuestions)
       });
 })
 
@@ -30,4 +34,53 @@ function createCategories(subCat) {
     container.append(
         '<br/><button id="submit" class="btn btn-primary right">Valider</button>'
     )
+}
+
+function getValuesInputs() {
+    $("[type='radio']").click(function(){
+        let divQid = ($(this).parents('div:first').attr('id'))
+        let valueQuestion = ($(this).val())
+        
+        //push tableau
+        tblRepQ.set(divQid, valueQuestion)
+        console.log(tblRepQ.size)
+        // genertate json for post after click validate
+    })
+}
+
+function validateButton(nbQuestions) {
+    $('button#submit').click(function(){
+        if (tblRepQ.size >= nbQuestions) {
+            postDataQuestions()
+        } else {
+            alert('Merci de répondre à toutes les questions de ce formulaire')
+        }
+    })
+}
+
+function postDataQuestions() {
+    //mapToJsonObject
+    let dataJSON = {};
+    tblRepQ.forEach((value, key) => {
+        var keys = key.split('.'),
+            last = keys.pop();
+        keys.reduce((r, a) => r[a] = r[a] || {}, dataJSON)[last] = value;
+    });
+    console.log(dataJSON);
+    if(dataJSON != null) {
+        //$.post(URL,data,callback);
+        // $.ajax({
+        //     type: "POST",
+        //     url: "URL HERE",
+        //     // The key needs to match your method's input parameter (case-sensitive).
+        //     data: JSON.stringify({ data: dataJSON }), //not sure about data & dataJSON
+        //     contentType: "application/json; charset=utf-8",
+        //     dataType: "json",
+        //     success: function(data){alert(data);},
+        //     failure: function(errMsg) {
+        //         alert(errMsg);
+        //     }
+        // })
+    }
+    // and send in ajax
 }
