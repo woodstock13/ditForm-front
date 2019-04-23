@@ -13,6 +13,7 @@ $(document).ready(function() {
          createCategories(questions)
          getValuesInputs()
          validateButton(nbQuestions)
+         nextSubQuestions()
      });
 })
 
@@ -31,10 +32,10 @@ function createCategories(questions) {
         )
         let formRep = $('form#reponsesTo_'+ myQuestions.reference)
         formRep.append(
-            '<label class="checkbox-inline"><input type="radio" value="0">&nbsp;Non exploré</label>',
-            '<label class="checkbox-inline"><input type="radio" value="1">&nbsp;Envisagé</label>',
-            '<label class="checkbox-inline"><input type="radio" value="2">&nbsp;Expérimenté</label>',
-			'<label class="checkbox-inline"><input type="radio" value="3">&nbsp;Industrialisé</label><br/>'
+            '<label class="radio-inline"><input type="radio" name="optradio" value="0">&nbsp;Non exploré</label>',
+            '<label class="radio-inline"><input type="radio" name="optradio" value="1">&nbsp;Envisagé</label>',
+            '<label class="radio-inline"><input type="radio" name="optradio" value="2">&nbsp;Expérimenté</label>',
+			'<label class="radio-inline"><input type="radio" name="optradio" value="3">&nbsp;Industrialisé</label><br/>'
         )
     }
     container.append(
@@ -71,7 +72,6 @@ function postDataQuestions() {
             last = keys.pop();
         keys.reduce((r, a) => r[a] = r[a] || {}, dataJSON)[last] = value;
     });
-    console.log(dataJSON);
     if(dataJSON != null) {
          $.ajax({
              type: "POST",
@@ -80,11 +80,20 @@ function postDataQuestions() {
              contentType: "application/json; charset=utf-8",
              dataType: "json",
              success: function(data){
-                 console.log(data);
+                 $("button#submit").attr("class","btn disabled")
+                 $("button#submit").after("<p>&nbsp Ce questionnaire a été valider avec succès!<p/>")
              },
              failure: function(errMsg) {
-                 alert(errMsg);
+                 alert(errMsg)
              }
          })
     }
+}
+function nextSubQuestions(nbQuestions) {
+    $('button#goToNextQ').click(function(){
+       let currentSubId = sessionStorage.getItem("repToPost")
+       console.log(typeof(currentSubId))
+        //passer un tableau, avec index num, pour se situer
+       // document.location.reload(true);
+    })
 }
