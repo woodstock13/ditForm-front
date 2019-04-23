@@ -10,7 +10,7 @@ $(document).ready(function() {
                     document.location.href="categories.html" // !!! à mettre dans le call back de postUserMail
                 }
                 else{
-                    console.error('problème de saisie !')
+                    alert('Merci de saisir une adresse valide !')
                 }
             })
           } else {

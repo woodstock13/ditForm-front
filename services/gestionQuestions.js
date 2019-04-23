@@ -1,6 +1,20 @@
 let tblRepQ = new Map()
 $(document).ready(function() {
-    // PROD remplacer par une requete post
+    let mySubCatId = sessionStorage.getItem("repToPost")
+    let myIdUser = sessionStorage.getItem("idUser")
+// PROD remplacer par une requete post
+    //     $.post("URL/services"+myIdUser, 
+//     {
+//         "idSubCat" : mySubCatId
+//     },
+//     function(data, status){
+            // let subCat = data.subCat
+            // let nbQuestions = subCat.questions.length
+            // $('#instruction').text("Merci de répondre aux questions - "+subCat.name+" :")
+            // createCategories(subCat)
+            // getValuesInputs()
+            // validateButton(nbQuestions)
+//       });
     $.get("mock/getQuestions.json", function(data, status){
         let subCat = data.subCat
         let nbQuestions = subCat.questions.length
@@ -60,6 +74,7 @@ function validateButton(nbQuestions) {
 
 function postDataQuestions() {
     //mapToJsonObject
+    let myIdUser = sessionStorage.getItem("idUser")
     let dataJSON = {};
     tblRepQ.forEach((value, key) => {
         var keys = key.split('.'),
@@ -68,10 +83,11 @@ function postDataQuestions() {
     });
     console.log(dataJSON);
     if(dataJSON != null) {
-        //$.post(URL,data,callback);
+    // add
+        //$.post(url,data,callback);
         // $.ajax({
         //     type: "POST",
-        //     url: "URL HERE",
+        //     url: "URL/Services+myIdUser",
         //     // The key needs to match your method's input parameter (case-sensitive).
         //     data: JSON.stringify({ data: dataJSON }), //not sure about data & dataJSON
         //     contentType: "application/json; charset=utf-8",
