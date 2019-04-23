@@ -1,43 +1,35 @@
 let tblRepQ = new Map()
+const URL = 'http://localhost:8080/dma-service/rest/dma';
+const mySubCatId = sessionStorage.getItem("repToPost")
+const mySubCatName = sessionStorage.getItem("subCatName")
+const myIdUser = sessionStorage.getItem("idUser")
+
 $(document).ready(function() {
-    let mySubCatId = sessionStorage.getItem("repToPost")
-    let myIdUser = sessionStorage.getItem("idUser")
-// PROD remplacer par une requete post
-    //     $.post("URL/services"+myIdUser, 
-//     {
-//         "idSubCat" : mySubCatId
-//     },
-//     function(data, status){
-            // let subCat = data.subCat
-            // let nbQuestions = subCat.questions.length
-            // $('#instruction').text("Merci de répondre aux questions - "+subCat.name+" :")
-            // createCategories(subCat)
-            // getValuesInputs()
-            // validateButton(nbQuestions)
-//       });
-    $.get("mock/getQuestions.json", function(data, status){
-        let subCat = data.subCat
-        let nbQuestions = subCat.questions.length
-        $('#instruction').text("Merci de répondre aux questions - "+subCat.name+" :")
-        createCategories(subCat)
-        getValuesInputs()
-        validateButton(nbQuestions)
-      });
+     $.get(URL+"/souscategories/"+mySubCatId, function(data, status){
+         let questions = data
+         console.log(questions)
+         let nbQuestions = questions.length
+         $('#instruction').text("Merci de répondre "+ nbQuestions +" aux questions de la catégorie - "+mySubCatName+" :")
+         createCategories(questions)
+         getValuesInputs()
+         validateButton(nbQuestions)
+     });
 })
 
-function createCategories(subCat) {
+function createCategories(questions) {
     var container = $('div.service_area');
-    for(var i = 0; i < subCat.questions.length; i++) {
-        var myQuestions = subCat.questions[i]
+    for(var i = 0; i < questions.length; i++) {
+        var myQuestions = questions[i]
+        console.log(myQuestions)
         container.append(
-            '<div id="'+ myQuestions.id +'">'
+            '<div id="'+ myQuestions.reference +'">'
         )
-        let divQuestion = $('div#'+ myQuestions.id)
+        let divQuestion = $('div#'+ myQuestions.reference)
         divQuestion.append(
-            '<br/><br/><div id="q_'+ myQuestions.id +'" class="row">'+ myQuestions.name +'</div><br/>',
-            '<form id="reponsesTo_'+ myQuestions.id +'">'
+            '<br/><br/><div id="q_'+ myQuestions.reference +'" class="row">'+ myQuestions.reference +" - "+ myQuestions.description +'</div><br/>',
+            '<form id="reponsesTo_'+ myQuestions.reference +'">'
         )
-        let formRep = $('form#reponsesTo_'+ myQuestions.id)
+        let formRep = $('form#reponsesTo_'+ myQuestions.reference)
         formRep.append(
             '<label class="checkbox-inline"><input type="radio" value="0">&nbsp;Non exploré</label>',
             '<label class="checkbox-inline"><input type="radio" value="1">&nbsp;Envisagé</label>',
@@ -54,11 +46,9 @@ function getValuesInputs() {
     $("[type='radio']").click(function(){
         let divQid = ($(this).parents('div:first').attr('id'))
         let valueQuestion = ($(this).val())
-        
         //push tableau
         tblRepQ.set(divQid, valueQuestion)
         console.log(tblRepQ.size)
-        // genertate json for post after click validate
     })
 }
 
@@ -83,20 +73,18 @@ function postDataQuestions() {
     });
     console.log(dataJSON);
     if(dataJSON != null) {
-    // add
-        //$.post(url,data,callback);
-        // $.ajax({
-        //     type: "POST",
-        //     url: "URL/Services+myIdUser",
-        //     // The key needs to match your method's input parameter (case-sensitive).
-        //     data: JSON.stringify({ data: dataJSON }), //not sure about data & dataJSON
-        //     contentType: "application/json; charset=utf-8",
-        //     dataType: "json",
-        //     success: function(data){alert(data);},
-        //     failure: function(errMsg) {
-        //         alert(errMsg);
-        //     }
-        // })
+         $.ajax({
+             type: "POST",
+             url: URL+"/reponses/"+myIdUser,
+             data: JSON.stringify(dataJSON),
+             contentType: "application/json; charset=utf-8",
+             dataType: "json",
+             success: function(data){
+                 console.log(data);
+             },
+             failure: function(errMsg) {
+                 alert(errMsg);
+             }
+         })
     }
-    // and send in ajax
 }

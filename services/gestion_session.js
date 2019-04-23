@@ -1,3 +1,4 @@
+const URL = 'http://localhost:8080/dma-service/rest/dma';
 $(document).ready(function() { 
         if (typeof(Storage) !== "undefined") {
             console.log('sessionStorage est bien supporté par votre browser')
@@ -5,9 +6,8 @@ $(document).ready(function() {
                 var mailValue = $.trim($("#formUserMail").val())
                 var form = $("#formUserMail")
                 if(mailNotEmpty(mailValue) && mailValidation(mailValue)){
-                    // postUserMail(mailValue)
+                    postUserMail(mailValue)
                     sessionStorage.setItem("idUser", mailValue);
-                    document.location.href="categories.html" // !!! à mettre dans le call back de postUserMail
                 }
                 else{
                     alert('Merci de saisir une adresse valide !')
@@ -36,16 +36,22 @@ function mailValidation(v) {
     }
 }
 
-// function postUserMail(mail) {
-//     $.post("https://jsonplaceholder.typicode.com/todos/1", 
-//     {
-//         "mail" : mail
-//     },
-//     function(data, status){
-//         //check status 
-//         console.log(status)
-//         //store
-//         sessionStorage.setItem("idUser", data); //CHECK SI DATA.BIDULE !!!
-//         document.location.href="test.html" //On prod, check 
-//       });
-// }
+ function postUserMail(mail) {
+     console.log("post sending")
+     let dataJSON = {"email" : mail } 
+     console.log(dataJSON)
+         $.ajax({
+             type: "POST",
+             url: URL+"/user",
+             data: JSON.stringify(dataJSON),
+             contentType: "application/json; charset=utf-8",
+             dataType: "json",
+             success: function(data){succesStoreIdUser(data)},
+             failure: function(errMsg) {alert(errMsg);}
+         })
+ }
+
+function succesStoreIdUser(repData){
+         sessionStorage.setItem("idUser", repData.customerId)
+         document.location.href="categories.html"
+}
